@@ -34,7 +34,7 @@ You just need to add this program to your `$PATH` or add this to you `~/.bashrc`
 
 ```
 export SFCD_REPO_PATH="<path_to_this_repo>"
-alias sfcd="bash ${SFCD_REPO_PATH}/srpm-full-context-diff.sh"
+alias sfcd="bash ${SFCD_REPO_PATH}/src/srpm-full-context-diff.sh"
 ```
 
 ## Usage
@@ -46,12 +46,12 @@ There are 2 modes how to get input files:
 1) You can compare 2 RPMS files stored on Web. It  will be downloaded to your local system:
 
 ```
-sfcd https://fedora.com/srpms/my_older_package.src.rpm https://fedora.com/srpms/my_newer_package.src.rpm --wget
+sfcd --old https://fedora.com/srpms/my_older_package.src.rpm --new https://fedora.com/srpms/my_newer_package.src.rpm
 ```
 
 2) You can compare 2 RPMS files already stored in your file system:
 ```
-sfcd my_older_package.src.rpm my_newer_package.src.rpm
+sfcd --old my_older_package.src.rpm --new my_newer_package.src.rpm
 ```
 
 ## Requirements
@@ -59,6 +59,8 @@ sfcd my_older_package.src.rpm my_newer_package.src.rpm
 - It requires the program [meld](https://meldmerge.org/) for graphical comparision.
 
 - It should support `BASH` version `4.2` or newer.
+
+- It uses the local BASH Helper Functions (BHF) framework - local in this context means that it is copied version to this repository withou any other external resource or dependenciest.
 
 ## LICENSE
 [MIT LICENSE](LICENSE)
