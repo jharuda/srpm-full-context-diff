@@ -75,8 +75,13 @@ apply_patches() {
     local output_path="$1"
     local srpm_type="$2"
     bhf_print_info "Applying patches for ${srpm_type} SRPM."
+    local specpath=${output_path}/SPECS/*spec
+    cp $specpath "tmp.spec"
+    # %patchN is not supported format, so we are converting it to %patch N format
+    sed -i "s/^%patch\([0-9]\)/%patch \1/g" $specpath
     rpmbuild --nodeps --define "_topdir ${output_path}" \
-               -bp ${output_path}/SPECS/*spec
+               -bp $specpath
+    mv "tmp.spec" $specpath
     bhf_print_info "SRPM patches for version '${srpm_type}' applied."
 }
 
