@@ -79,6 +79,7 @@ apply_patches() {
     cp $specpath "tmp.spec"
     # %patchN is not supported format, so we are converting it to %patch N format
     sed -i "s/^%patch\([0-9]\)/%patch \1/g" $specpath
+    sed -i -e "s/^libtoolize/# libtoolize/g" -e "s/^aclocal/# aclocal/g" -e "s/^automake/# automake/g" -e "s/^autoconf/# autoconf/g" -e "s/^autoheader/# autoheader/g" $specpath
     rpmbuild --nodeps --define "_topdir ${output_path}" \
                -bp $specpath
     mv "tmp.spec" $specpath
