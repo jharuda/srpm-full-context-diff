@@ -130,10 +130,17 @@ compare_spec() {
 
 compare_data() {
     func_called_info "$FUNCNAME"
+    local automatch="$1"
     bhf_print_info "Getting paths with source codes."
-    patched_folder_old=$( ls -d data_old/BUILD/* | head -n 1 )
-    patched_folder_new=$( ls -d data_new/BUILD/* | head -n 1 )
-
+    if [[ $automatch == "1" ]]; then
+        patched_folder_old=$( ls -d data_old/BUILD/*/* -1 | grep -v SPECPARTS | head -n 1 )
+        patched_folder_new=$( ls -d data_new/BUILD/*/* -1 | grep -v SPECPARTS | head -n 1 )
+    else
+        patched_folder_old=$( ls -d data_old/BUILD/* | head -n 1 )
+        patched_folder_new=$( ls -d data_new/BUILD/* | head -n 1 )
+    fi
+    echo "patched_folder_old: $patched_folder_old"
+    echo "patched_folder_new: $patched_folder_new"
     bhf_print_info "In old SRPM There are $( ls data_old/SOURCES/*.patch | wc -l ) patches"
     ls data_old/SOURCES/*.patch || true
     bhf_print_info "In new SRPM There are $( ls data_new/SOURCES/*.patch | wc -l ) patches"
@@ -209,6 +216,8 @@ print_help() {
     echo ""
     echo "     -o, --old <uri|nvr>           The old SRPM URI or build NVR"
     echo ""
+    echo "     -a, --automatch-folder        It is for matching compared main data folders."
+    echo ""
     echo "     -h, --help                    Print this help"
     echo ""
     echo "     -v, --verbose                 Print more output from this program. It is eqvivalent of setting BHF_DEBUG=1"
@@ -233,6 +242,8 @@ params_parser() {
                  [ -z "$2" ] && bhf_error_exit "Missing old SRPM on command line after the parameter '--old'"
                  param_old="$2"
                  shift ;;
+            --automatch-folder|-a)
+                 param_automatch=1 ;;
             --verbose|-v)
                  BHF_DEBUG=1 ;;
             *)
@@ -314,7 +325,7 @@ main() {
     srpm_extract "$filename_old" "$SRPM_TYPE_OLD"
     srpm_extract "$filename_new" "$SRPM_TYPE_NEW"
 
-    compare_data
+    compare_data "$param_automatch"
     compare_spec
     bhf_print_success "Finished. :) See you later."
 }
